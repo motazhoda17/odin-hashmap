@@ -91,4 +91,25 @@ export default class HashMap {
   clear() {
     this.buckets = this.createBuckets(this.capacity);
   }
+
+  // Returns every [key, value] pair, e.g. [["apple", "red"], ["dog", "brown"]].
+  // Order is NOT the insertion order; it depends on which bucket each key
+  // landed in. That's normal for a hash map.
+  entries() {
+    const result = [];
+    this.buckets.forEach((bucket) => {
+      bucket.forEach((entry) => result.push([entry.key, entry.value]));
+    });
+    return result;
+  }
+
+  // Returns an array of all keys.
+  keys() {
+    return this.entries().map(([key]) => key);
+  }
+
+  // Returns an array of all values.
+  values() {
+    return this.entries().map(([, value]) => value);
+  }
 }
