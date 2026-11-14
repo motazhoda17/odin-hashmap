@@ -68,4 +68,27 @@ export default class HashMap {
   has(key) {
     return this.getBucket(key).some((entry) => entry.key === key);
   }
+
+  // Removes the entry for `key`. Returns true if it was removed,
+  // false if the key wasn't in the hash map.
+  remove(key) {
+    const bucket = this.getBucket(key);
+    const index = bucket.findIndex((entry) => entry.key === key);
+
+    if (index === -1) return false;
+
+    bucket.splice(index, 1); // remove 1 item at `index`
+    return true;
+  }
+
+  // Returns how many keys are stored.
+  length() {
+    // Add up the number of entries in every bucket.
+    return this.buckets.reduce((total, bucket) => total + bucket.length, 0);
+  }
+
+  // Removes every entry (the capacity stays the same).
+  clear() {
+    this.buckets = this.createBuckets(this.capacity);
+  }
 }
