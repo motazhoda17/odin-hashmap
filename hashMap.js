@@ -56,6 +56,27 @@ export default class HashMap {
 
     // Different key (even if it landed in the same bucket) = new entry.
     bucket.push({ key, value });
+
+    // Only a NEW key can push us over the load factor, so we only check here.
+    if (this.length() / this.capacity > this.loadFactor) {
+      this.grow();
+    }
+  }
+
+  // Doubles the number of buckets and re-adds every entry.
+  // We have to re-hash everything because hash() uses `% this.capacity`,
+  // so after the capacity changes most keys belong in a different bucket.
+  grow() {
+    const oldEntries = this.entries();
+
+    this.capacity *= 2;
+    this.buckets = this.createBuckets(this.capacity);
+
+    oldEntries.forEach(([key, value]) => {
+      // Calling set() is safe: the new capacity is big enough that this
+      // won't trigger another grow().
+      this.set(key, value);
+    });
   }
 
   // Returns the value stored under `key`, or undefined if it isn't there.
