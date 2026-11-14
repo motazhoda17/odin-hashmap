@@ -41,4 +41,31 @@ export default class HashMap {
 
     return this.buckets[index];
   }
+
+  // Stores `value` under `key`. If the key already exists, its value is
+  // overwritten instead of adding a second entry.
+  set(key, value) {
+    const bucket = this.getBucket(key);
+    const existing = bucket.find((entry) => entry.key === key);
+
+    if (existing) {
+      // Same key = update, not a new entry.
+      existing.value = value;
+      return;
+    }
+
+    // Different key (even if it landed in the same bucket) = new entry.
+    bucket.push({ key, value });
+  }
+
+  // Returns the value stored under `key`, or undefined if it isn't there.
+  get(key) {
+    const entry = this.getBucket(key).find((item) => item.key === key);
+    return entry?.value;
+  }
+
+  // Returns true if `key` is in the hash map.
+  has(key) {
+    return this.getBucket(key).some((entry) => entry.key === key);
+  }
 }
